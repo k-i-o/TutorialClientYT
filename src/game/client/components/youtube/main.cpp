@@ -60,8 +60,6 @@ void CYoutube::SetAngry(){
 
 void CYoutube::PetStateUpdate(){
 
-    dbg_msg("Youtubeeeee :D", "PetState: %d, Timer: %f", PetState, StateTimer);
-
     switch (PetState) {
 
         case IDLE:
@@ -143,10 +141,10 @@ void CYoutube::RenderPet(){
 
         RenderTools()->RenderTee(CAnimState::GetIdle(), &pInfo, (PetState == ANGRY ? EMOTE_ANGRY : EMOTE_NORMAL), vec2(1, 0.4f), PetPos, 1);
     }else{
-        Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteWeaponLaser);
-        RenderTools()->SelectSprite(SPRITE_WEAPON_LASER_BODY);
+        Graphics()->TextureSet(g_pData->m_aImages[IMAGE_PET].m_Id);//(GameClient()->m_GameSkin.m_SpriteWeaponLaser);
+    //     // RenderTools()->SelectSprite(SPRITE_WEAPON_LASER_BODY);
         Graphics()->QuadsBegin();
-        Graphics()->SetColor(.9, .3, 1, 1);
+        Graphics()->SetColor(1,1,1,1);//(.9, .3, 1, 1);
         RenderTools()->DrawSprite(PetPos.x, PetPos.y, 30.f);
         Graphics()->QuadsEnd();
     }

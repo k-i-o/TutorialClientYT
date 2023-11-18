@@ -1155,6 +1155,7 @@ set(EXPECTED_DATA
   audio/wp_switch-03.wv
   autoexec_server.cfg
   blob.png
+  pet.png
   censorlist.txt
   console.png
   console_bar.png

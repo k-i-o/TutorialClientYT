@@ -675,6 +675,9 @@ void CGameTeams::OnFinish(CPlayer *Player, float Time, const char *pTimestamp)
 	const int ClientID = Player->GetCID();
 	CPlayerData *pData = GameServer()->Score()->PlayerData(ClientID);
 
+	char dataBuf[128];
+	str_format(dataBuf, 128, "Time: %f", Time);
+
 	char aBuf[128];
 	SetLastTimeCp(Player, -1);
 	// Note that the "finished in" message is parsed by the client
