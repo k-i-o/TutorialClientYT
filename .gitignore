@@ -2,7 +2,9 @@
 # directories.
 data/
 !/data/
-
+ddnet-libs/
+build/
+builds/
 docs/
 
 bundle/
