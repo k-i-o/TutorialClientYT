@@ -1155,7 +1155,6 @@ set(EXPECTED_DATA
   audio/wp_switch-03.wv
   autoexec_server.cfg
   blob.png
-  pet.png
   censorlist.txt
   console.png
   console_bar.png
@@ -1582,6 +1581,7 @@ set(EXPECTED_DATA
   menuimages/play_game.png
   menuimages/settings.png
   particles.png
+  pet.png
   shader/pipeline.frag
   shader/pipeline.vert
   shader/prim.frag

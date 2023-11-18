@@ -129,23 +129,28 @@ void CYoutube::Pet(){
 
 }
 
-void CYoutube::RenderPet(){
+void CYoutube::RenderPet()
+{
     if(m_pClient->m_Snap.m_LocalClientID == -1 || !m_pClient->m_Snap.m_aCharacters[m_pClient->m_Snap.m_LocalClientID].m_Active)
 		return; //no action if player not in game
         
     Graphics()->TextureClear();
     RenderTools()->MapScreenToInterface(m_pClient->m_Camera.m_Center.x, m_pClient->m_Camera.m_Center.y);
 
-    if(g_Config.m_ClRenderPetLikeTee){
+    if(g_Config.m_ClRenderPetLikeTee)
+    {
         CTeeRenderInfo pInfo = m_pClient->m_aClients[m_pClient->m_Snap.m_LocalClientID].m_RenderInfo;
 
         RenderTools()->RenderTee(CAnimState::GetIdle(), &pInfo, (PetState == ANGRY ? EMOTE_ANGRY : EMOTE_NORMAL), vec2(1, 0.4f), PetPos, 1);
-    }else{
-        Graphics()->TextureSet(g_pData->m_aImages[IMAGE_PET].m_Id);//(GameClient()->m_GameSkin.m_SpriteWeaponLaser);
-    //     // RenderTools()->SelectSprite(SPRITE_WEAPON_LASER_BODY);
+    }
+    else
+    {
+	    float texturesize = 32.0f;
+        Graphics()->TextureSet(g_pData->m_aImages[IMAGE_PET].m_Id);
         Graphics()->QuadsBegin();
-        Graphics()->SetColor(1,1,1,1);//(.9, .3, 1, 1);
-        RenderTools()->DrawSprite(PetPos.x, PetPos.y, 30.f);
+        Graphics()->SetColor(1,1,1,1);
+	    IGraphics::CQuadItem QuadItem = IGraphics::CQuadItem(PetPos.x, PetPos.y, texturesize, texturesize);
+	    Graphics()->QuadsDrawTL(&QuadItem, 1);
         Graphics()->QuadsEnd();
     }
 
