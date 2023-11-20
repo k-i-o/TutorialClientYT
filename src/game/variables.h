@@ -225,6 +225,13 @@ MACRO_CONFIG_INT(ClVideoX264Preset, cl_video_preset, 5, 0, 9, CFGFLAG_CLIENT | C
 MACRO_CONFIG_INT(ClYoutubePet, yt_pet, 0, 1, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Enable youtube pet")
 MACRO_CONFIG_INT(ClYoutubePetPositionLine, yt_pet_line, 0, 0, 1, CFGFLAG_CLIENT, "Youtube pet position line")
 MACRO_CONFIG_INT(ClRenderPetLikeTee, yt_pet_tee, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube pet like a tee")
+MACRO_CONFIG_INT(ClYoutubeTeeTrail, yt_tee_trail, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube tee trail")
+MACRO_CONFIG_INT(ClYoutubeTeeTrailRadius, yt_tee_trail_radius, 15, 5, 1000, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube tee trail radius")
+MACRO_CONFIG_COL(ClYoutubeTeeTrailColor, yt_tee_trail_color, 4456703, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube tee trail color")
+MACRO_CONFIG_INT(ClYoutubePetTrail, yt_pet_trail, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube pet trail")
+MACRO_CONFIG_INT(ClYoutubePetTrailRadius, yt_pet_trail_radius, 15, 5, 1000, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube pet trail radius")
+MACRO_CONFIG_COL(ClYoutubePetTrailColor, yt_pet_trail_color, 4456703, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube pet trail color")
+MACRO_CONFIG_INT(ClYoutubeMagicParticles, yt_magic_particles, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube magic particles")
 
 // debug
 #ifdef CONF_DEBUG // this one can crash the server if not used correctly

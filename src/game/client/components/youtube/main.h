@@ -1,5 +1,6 @@
 #include <base/vmath.h>
 #include <game/client/component.h>
+#include <engine/graphics.h>
 
 #pragma once
 
@@ -24,6 +25,11 @@ public:
     void GoTo(vec2 path);
     void PetStateUpdate();
 
+    void RenderTrail(float rSize, int color, vec2 pos);
+    void Trail(vec2 pos, float timePassed, ColorRGBA color);
+
+    void MagicParticles(float radius);
+
     virtual int Sizeof() const override { return sizeof(*this); }
     virtual void OnRender() override;
 
@@ -36,6 +42,8 @@ private:
     };
 
     vec2 PetPos;
+    vec2 PetPosOld;
+    vec2 PetVel;
     float speed = 15000;
     PetState PetState = FOLLOW;
 

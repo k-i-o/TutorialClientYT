@@ -2978,7 +2978,13 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 	if(DoButton_CheckBox(&g_Config.m_ClYoutubePet, "Show Youtube Pet", g_Config.m_ClYoutubePet, &Space))
 	{
 		g_Config.m_ClYoutubePet ^= 1;
-		
+
+		// int Amount = 360;
+
+        // for(int i = 0; i < Amount; i++) {
+        //     m_pClient->m_DamageInd.Create(m_pClient->m_LocalCharacterPos, direction(i), 1);
+        // }
+		// m_pClient->m_Effects.PowerupShine(m_pClient->m_LocalCharacterPos*0.2, vec2(96, 18), 1.0f);
 	}
 	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubePet, &Space, "Show the Pet");
 		
@@ -2991,6 +2997,26 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 		}
 		GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubePetPositionLine, &Space, Localize("Show a line between the player and the pet"));
 			
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		if(DoButton_CheckBox(&g_Config.m_ClYoutubePetTrail, "Render Pet Trail", g_Config.m_ClYoutubePetTrail, &Space))
+		{
+			g_Config.m_ClYoutubePetTrail ^= 1;
+			
+		}
+		GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubePetTrail, &Space, "Render Tee Trail");
+
+		if(g_Config.m_ClYoutubePetTrail) {  
+			static CButtonContainer s_YoutubePetTrailResetID;
+			
+			Container.HSplitTop(LineMargin, &Space, &Container);
+			DoLine_ColorPicker(&s_YoutubePetTrailResetID, 25.0f, 13.0f, 5.0f, &Space, Localize("Trail color"), &g_Config.m_ClYoutubePetTrailColor, ColorRGBA(1,1,1,1), false);
+			GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubePetTrailColor, &Space, Localize("Trail color"));
+			
+			Container.HSplitTop(LineMargin, &Space, &Container);
+			UI()->DoScrollbarOption(&g_Config.m_ClYoutubePetTrailRadius, &g_Config.m_ClYoutubePetTrailRadius, &Space, Localize("Trail radius"), 10, 1000);
+
+		}
+		
 	}	
 
 	Container.HSplitTop(LineMargin, &Space, &Container);
@@ -3000,6 +3026,34 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 		
 	}
 	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClRenderPetLikeTee, &Space, "Render the Pet like a Tee");
+
+	Container.HSplitTop(LineMargin, &Space, &Container);
+	if(DoButton_CheckBox(&g_Config.m_ClYoutubeTeeTrail, "Render Tee Trail", g_Config.m_ClYoutubeTeeTrail, &Space))
+	{
+		g_Config.m_ClYoutubeTeeTrail ^= 1;
+		
+	}
+	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubeTeeTrail, &Space, "Render Tee Trail");
+
+	if(g_Config.m_ClYoutubeTeeTrail) {  
+		static CButtonContainer s_YoutubeTeeTrailResetID;
+		
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		DoLine_ColorPicker(&s_YoutubeTeeTrailResetID, 25.0f, 13.0f, 5.0f, &Space, Localize("Trail color"), &g_Config.m_ClYoutubeTeeTrailColor, ColorRGBA(1,1,1,1), false);
+		GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubeTeeTrailColor, &Space, Localize("Trail color"));
+		
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		UI()->DoScrollbarOption(&g_Config.m_ClYoutubeTeeTrailRadius, &g_Config.m_ClYoutubeTeeTrailRadius, &Space, Localize("Trail radius"), 10, 1000);
+
+	}
+
+	Container.HSplitTop(LineMargin, &Space, &Container);
+	if(DoButton_CheckBox(&g_Config.m_ClYoutubeMagicParticles, "Render magic particles", g_Config.m_ClYoutubeMagicParticles, &Space))
+	{
+		g_Config.m_ClYoutubeMagicParticles ^= 1;
+		
+	}
+	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubeMagicParticles, &Space, "Render magic particles");
 }
 
 void CMenus::RenderSettingsDDNet(CUIRect MainView)

@@ -104,7 +104,7 @@ void CYoutube::PetStateUpdate(){
   
     //if(random_float(0,1)) SetCloseEyes();  
 
-}
+}        
 
 void CYoutube::OnRender(){
     if(g_Config.m_ClYoutubePet){
@@ -112,7 +112,16 @@ void CYoutube::OnRender(){
 
         if(g_Config.m_ClYoutubePetPositionLine)
             RenderPetPositionLine();
+
+        if(g_Config.m_ClYoutubePetTrail && PetVel.x < 5 && PetVel.y < 5)
+            RenderTrail(g_Config.m_ClYoutubePetTrailRadius, g_Config.m_ClYoutubePetTrailColor, PetPos);
     }
+
+    if(g_Config.m_ClYoutubeTeeTrail && m_pClient->m_PredictedChar.m_Vel != vec2(0,0))
+        RenderTrail(g_Config.m_ClYoutubeTeeTrailRadius, g_Config.m_ClYoutubeTeeTrailColor, m_pClient->m_LocalCharacterPos);
+
+    if(g_Config.m_ClYoutubeMagicParticles)
+        MagicParticles(50.f);
 
 }
 
@@ -145,15 +154,20 @@ void CYoutube::RenderPet()
     }
     else
     {
-	    float texturesize = 32.0f;
+        int petWidth = 35;
+        int petHeight = 45;
+
         Graphics()->TextureSet(g_pData->m_aImages[IMAGE_PET].m_Id);
         Graphics()->QuadsBegin();
         Graphics()->SetColor(1,1,1,1);
-	    IGraphics::CQuadItem QuadItem = IGraphics::CQuadItem(PetPos.x, PetPos.y, texturesize, texturesize);
+	    IGraphics::CQuadItem QuadItem = IGraphics::CQuadItem(PetPos.x-petWidth/2, PetPos.y-petHeight/2, petWidth, petHeight);
 	    Graphics()->QuadsDrawTL(&QuadItem, 1);
         Graphics()->QuadsEnd();
     }
 
+    PetVel = vec2((PetPos.x - PetPosOld.x)/Client()->RenderFrameTime(), (PetPos.y - PetPosOld.y)/Client()->RenderFrameTime());
+
+    PetPosOld = PetPos;
 }
 
 void CYoutube::RenderPetPositionLine(){
@@ -168,3 +182,61 @@ void CYoutube::RenderPetPositionLine(){
     Graphics()->LinesDraw(&Line, 1);
     Graphics()->LinesEnd();
 }
+
+void CYoutube::RenderTrail(float rSize, int color, vec2 pos) {
+
+    ColorRGBA trailColor = color_cast<ColorRGBA>(ColorHSLA(color));
+    
+    int r = random_float(-rSize/10, rSize/10);
+
+    Trail({ pos.x + r, pos.y + r }, Client()->RenderFrameTime(), trailColor);
+
+}
+
+void CYoutube::Trail(vec2 pos, float timePassed, ColorRGBA color)
+{
+	if(timePassed < 0.001f)
+		return;
+
+    for(int i = 0; i < 5; i++) {
+
+        CParticle p;
+        p.SetDefault();
+        p.m_Spr = SPRITE_PART_BALL;
+        p.m_Pos = pos;
+        p.m_LifeSpan = random_float(0.25f, 0.5f);
+        p.m_StartSize = 8.0f;
+        p.m_EndSize = 0;
+        p.m_Friction = 0.7f;
+        p.m_Color = color;
+        p.m_StartAlpha = color.a;
+        m_pClient->m_Particles.Add(CParticles::GROUP_PROJECTILE_TRAIL, &p, timePassed);
+
+    }
+}
+
+void CYoutube::MagicParticles(float radius) {
+
+    for(int i = 0; i < 10; i++) {
+        CParticle p;
+        p.SetDefault();
+        p.m_Spr = SPRITE_PART_BALL;
+
+        float angle = random_float(0, 2 * pi);
+        float distance = random_float(0, radius);
+        vec2 offset = vec2(cos(angle) * distance, sin(angle) * distance);
+
+        p.m_Pos = m_pClient->m_LocalCharacterPos + offset;
+
+        p.m_LifeSpan = random_float(0.25f, 0.5f);
+        p.m_StartSize = 8.0f;
+        p.m_EndSize = 0;
+        p.m_Friction = 0.7f;
+        p.m_Color = color_cast<ColorRGBA>(ColorHSLA(random_float(40000, 50000)));
+        p.m_StartAlpha = p.m_Color.a;
+        m_pClient->m_Particles.Add(CParticles::GROUP_PROJECTILE_TRAIL, &p, Client()->RenderFrameTime());
+    }
+}
+
+
+//added trail player and pet
