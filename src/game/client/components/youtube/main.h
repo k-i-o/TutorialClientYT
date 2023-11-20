@@ -29,6 +29,7 @@ public:
     void Trail(vec2 pos, float timePassed, ColorRGBA color);
 
     void MagicParticles(float radius);
+    void MagicParticles2(float radius);
 
     virtual int Sizeof() const override { return sizeof(*this); }
     virtual void OnRender() override;
@@ -41,11 +42,18 @@ private:
         //CLOSE_EYES
     };
 
+    float timerValue = 0.2f;
+    float timer = timerValue;
+
     vec2 PetPos;
     vec2 PetPosOld;
     vec2 PetVel;
     float speed = 15000;
+    float acceleration = 100;
     PetState PetState = FOLLOW;
+
+    float maxDistance = 250;
+    float minDistance = 70;
 
     float StateTimer = IDLE_TIMER;
     vec2 target;

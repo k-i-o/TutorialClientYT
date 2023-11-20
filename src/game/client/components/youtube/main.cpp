@@ -27,6 +27,11 @@ vec2 CYoutube::PlayerPathNormalization(vec2 player){
 }
 
 void CYoutube::GoTo(vec2 path){
+    float distanceFactor = 1.0f - (distance(m_pClient->m_LocalCharacterPos, PetPos) / maxDistance);
+    float distanceAcceleration = acceleration * distanceFactor;
+
+    speed += distanceAcceleration * Client()->RenderFrameTime();
+
     PetPos.x += path.x * speed * Client()->RenderFrameTime();
     PetPos.y += path.y * speed * Client()->RenderFrameTime();
 }
@@ -86,7 +91,7 @@ void CYoutube::PetStateUpdate(){
             }
             break;*/
         case FOLLOW:
-            if(distance(m_pClient->m_LocalCharacterPos, PetPos) <= 70) {
+            if(distance(m_pClient->m_LocalCharacterPos, PetPos) <= minDistance) {
                 StateTimer = IDLE_TIMER;
                 SetIdle();
             } else {
@@ -99,7 +104,7 @@ void CYoutube::PetStateUpdate(){
     
     }
 
-    if(distance(m_pClient->m_LocalCharacterPos, PetPos) >= 250 || (PetPos.x < 0 || PetPos.y < 0)) 
+    if(distance(m_pClient->m_LocalCharacterPos, PetPos) >= maxDistance || (PetPos.x < 0 || PetPos.y < 0)) 
         SetFollow();
   
     //if(random_float(0,1)) SetCloseEyes();  
@@ -113,7 +118,7 @@ void CYoutube::OnRender(){
         if(g_Config.m_ClYoutubePetPositionLine)
             RenderPetPositionLine();
 
-        if(g_Config.m_ClYoutubePetTrail && PetVel.x < 5 && PetVel.y < 5)
+        if(g_Config.m_ClYoutubePetTrail && PetVel.x < 0 && PetVel.y < 0)
             RenderTrail(g_Config.m_ClYoutubePetTrailRadius, g_Config.m_ClYoutubePetTrailColor, PetPos);
     }
 
@@ -122,6 +127,9 @@ void CYoutube::OnRender(){
 
     if(g_Config.m_ClYoutubeMagicParticles)
         MagicParticles(50.f);
+
+    if(g_Config.m_ClYoutubeMagicParticles2)
+        MagicParticles2(80.f);
 
 }
 
@@ -238,5 +246,31 @@ void CYoutube::MagicParticles(float radius) {
     }
 }
 
+void CYoutube::MagicParticles2(float radius) {
+    timer -= Client()->RenderFrameTime();
+    if(timer <= 0) {
+        for(int i = 0; i < 30; i++) {
+
+            timer = timerValue;
+            CParticle p;
+            p.SetDefault();
+            p.m_Spr = SPRITE_PART_BALL;
+
+            float angle = random_float(0, 2 * pi);
+            float distance = random_float(0, radius);
+            vec2 offset = vec2(cos(angle) * distance, sin(angle) * distance);
+
+            p.m_Pos = m_pClient->m_LocalCharacterPos + offset;
+
+            p.m_LifeSpan = random_float(0.5f, 1.5f);
+            p.m_StartSize = 8.0f;
+            p.m_EndSize = 0;
+            p.m_Friction = 0.7f;
+            p.m_Color = ColorRGBA(random_float(0, 1), random_float(0, 1), random_float(0, 1), random_float(0, 1));
+            p.m_StartAlpha = p.m_Color.a;
+            m_pClient->m_Particles.Add(CParticles::GROUP_PROJECTILE_TRAIL, &p, Client()->RenderFrameTime());
+        }
+    }
+}
 
 //added trail player and pet

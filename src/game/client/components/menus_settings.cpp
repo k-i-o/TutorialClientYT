@@ -3054,6 +3054,14 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 		
 	}
 	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubeMagicParticles, &Space, "Render magic particles");
+
+	Container.HSplitTop(LineMargin, &Space, &Container);
+	if(DoButton_CheckBox(&g_Config.m_ClYoutubeMagicParticles2, "Render magic particles2", g_Config.m_ClYoutubeMagicParticles2, &Space))
+	{
+		g_Config.m_ClYoutubeMagicParticles2 ^= 1;
+		
+	}
+	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubeMagicParticles2, &Space, "Render magic particles2");
 }
 
 void CMenus::RenderSettingsDDNet(CUIRect MainView)

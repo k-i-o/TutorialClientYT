@@ -232,6 +232,8 @@ MACRO_CONFIG_INT(ClYoutubePetTrail, yt_pet_trail, 0, 0, 1, CFGFLAG_CLIENT | CFGF
 MACRO_CONFIG_INT(ClYoutubePetTrailRadius, yt_pet_trail_radius, 15, 5, 1000, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube pet trail radius")
 MACRO_CONFIG_COL(ClYoutubePetTrailColor, yt_pet_trail_color, 4456703, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube pet trail color")
 MACRO_CONFIG_INT(ClYoutubeMagicParticles, yt_magic_particles, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube magic particles")
+MACRO_CONFIG_INT(ClYoutubeMagicParticles2, yt_magic_particles2, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube magic particles2")
+
 
 // debug
 #ifdef CONF_DEBUG // this one can crash the server if not used correctly
