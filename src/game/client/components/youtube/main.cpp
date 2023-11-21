@@ -74,7 +74,7 @@ void CYoutube::PetStateUpdate(){
             } else{
                 SetIdle();
             }
-        
+	    petMoving = false;
             break;
         case ANGRY:
             StateTimer -= Client()->RenderFrameTime();
@@ -82,6 +82,7 @@ void CYoutube::PetStateUpdate(){
                 StateTimer = IDLE_TIMER;
                 SetIdle();
             }
+	    petMoving = false;
             break;        
         /*case CLOSE_EYES:
             StateTimer -= Client()->RenderFrameTime();
@@ -97,6 +98,7 @@ void CYoutube::PetStateUpdate(){
             } else {
                 target = PlayerPathNormalization(m_pClient->m_LocalCharacterPos);
             }
+	    petMoving = true;
             break;
 
         default:
@@ -118,7 +120,7 @@ void CYoutube::OnRender(){
         if(g_Config.m_ClYoutubePetPositionLine)
             RenderPetPositionLine();
 
-        if(g_Config.m_ClYoutubePetTrail && PetVel.x < 0 && PetVel.y < 0)
+        if(g_Config.m_ClYoutubePetTrail && petMoving)
             RenderTrail(g_Config.m_ClYoutubePetTrailRadius, g_Config.m_ClYoutubePetTrailColor, PetPos);
     }
 
