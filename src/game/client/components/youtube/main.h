@@ -59,4 +59,6 @@ private:
     vec2 target;
 
     float timerIdle = 0;
+
+    bool petMoving = false;
 };
