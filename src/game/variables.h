@@ -234,6 +234,12 @@ MACRO_CONFIG_COL(ClYoutubePetTrailColor, yt_pet_trail_color, 4456703, CFGFLAG_CL
 MACRO_CONFIG_INT(ClYoutubeMagicParticles, yt_magic_particles, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube magic particles")
 MACRO_CONFIG_INT(ClYoutubeMagicParticles2, yt_magic_particles2, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube magic particles2")
 
+// FAKE PING HERE 
+MACRO_CONFIG_INT(ClFakePing, yt_fakeping, 0, 0, 1, CFGFLAG_CLIENT, "Fake ping")
+MACRO_CONFIG_INT(ClFakePingEnabled, yt_fakepingenabled, 0, 0, 1, CFGFLAG_CLIENT, "Fake ping (high ping)")
+MACRO_CONFIG_INT(ClFakePingEnabled1, yt_fakepingenabled1, 0, 0, 1, CFGFLAG_CLIENT, "Fake ping (low ping)")
+MACRO_CONFIG_INT(ClFreezePing, yt_freezeping, 0, 0, 1, CFGFLAG_CLIENT, "Freeze you real ping")
+MACRO_CONFIG_INT(ClWhatsMyPing, yt_ping, 0, 0, 9999, CFGFLAG_CLIENT, "Your real ping")
 
 // debug
 #ifdef CONF_DEBUG // this one can crash the server if not used correctly

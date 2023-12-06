@@ -2221,6 +2221,19 @@ void CClient::ProcessServerPacket(CNetChunk *pPacket, int Conn, bool Dummy)
 						m_aCodeRunAfterJoin[Conn] = true;
 					}
 
+					//FAKE PING THERE
+					if(g_Config.m_ClFakePingEnabled) {
+						GameTick -= g_Config.m_ClFakePing * 2/40;
+					} else if(g_Config.m_ClFakePingEnabled1) {
+						GameTick += g_Config.m_ClFakePing * 2/40;
+					}
+
+					GameTick += GameTick % 2;
+
+					if(g_Config.m_ClFreezePing) {
+						GameTick++;
+					}
+				
 					// ack snapshot
 					m_aAckGameTick[Conn] = GameTick;
 				}

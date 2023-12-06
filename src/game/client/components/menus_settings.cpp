@@ -3017,15 +3017,16 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 
 		}
 		
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		if(DoButton_CheckBox(&g_Config.m_ClRenderPetLikeTee, "Render Pet like a Tee", g_Config.m_ClRenderPetLikeTee, &Space))
+		{
+			g_Config.m_ClRenderPetLikeTee ^= 1;
+			
+		}
+		GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClRenderPetLikeTee, &Space, "Render the Pet like a Tee");
+		
 	}	
 
-	Container.HSplitTop(LineMargin, &Space, &Container);
-	if(DoButton_CheckBox(&g_Config.m_ClRenderPetLikeTee, "Render Pet like a Tee", g_Config.m_ClRenderPetLikeTee, &Space))
-	{
-		g_Config.m_ClRenderPetLikeTee ^= 1;
-		
-	}
-	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClRenderPetLikeTee, &Space, "Render the Pet like a Tee");
 
 	Container.HSplitTop(LineMargin, &Space, &Container);
 	if(DoButton_CheckBox(&g_Config.m_ClYoutubeTeeTrail, "Render Tee Trail", g_Config.m_ClYoutubeTeeTrail, &Space))
@@ -3062,6 +3063,48 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 		
 	}
 	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubeMagicParticles2, &Space, "Render magic particles2");
+
+	//FAKE PING HERE
+	Container.HSplitTop(LineMargin, &Space, &Container);
+	if(DoButton_CheckBox(&g_Config.m_ClFakePingEnabled, "Enable fake ping (your ping to 999)", g_Config.m_ClFakePingEnabled, &Space))
+	{
+		g_Config.m_ClFakePingEnabled ^= 1;
+	}
+
+	if(g_Config.m_ClFakePingEnabled) {  
+		g_Config.m_ClFakePingEnabled1 = 0;
+
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		UI()->DoScrollbarOption(&g_Config.m_ClFakePing, &g_Config.m_ClFakePing, &Space, "Fake ping", 0, 1000.f);
+
+		if(g_Config.m_ClFakePing < currentRealPing) {
+			g_Config.m_ClFakePing = currentRealPing + 1;
+		}
+	}
+
+	Container.HSplitTop(LineMargin, &Space, &Container);
+	if(DoButton_CheckBox(&g_Config.m_ClFakePingEnabled1, "Enable fake ping (0-9)", g_Config.m_ClFakePingEnabled1, &Space))
+	{
+		g_Config.m_ClFakePingEnabled1 ^= 1;
+	}
+
+	if(g_Config.m_ClFakePingEnabled1) {
+		g_Config.m_ClFakePingEnabled = 0;
+
+		if(g_Config.m_ClFakePing > g_Config.m_ClWhatsMyPing + 5 || g_Config.m_ClFakePing < g_Config.m_ClWhatsMyPing - 5) {
+			g_Config.m_ClFakePing = g_Config.m_ClWhatsMyPing;
+		}
+	}
+
+	if((!g_Config.m_ClFakePingEnabled && !g_Config.m_ClFakePingEnabled1) || currentRealPing == 0.f) {
+		currentRealPing = g_Config.m_ClWhatsMyPing;
+	}
+
+	Container.HSplitTop(LineMargin, &Space, &Container);
+	if(DoButton_CheckBox(&g_Config.m_ClFreezePing, "Enable freeze your current ping", g_Config.m_ClFreezePing, &Space))
+	{
+		g_Config.m_ClFreezePing ^= 1;
+	}
 }
 
 void CMenus::RenderSettingsDDNet(CUIRect MainView)

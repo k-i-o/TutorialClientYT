@@ -849,6 +849,12 @@ void CPlayers::OnRender()
 	}
 	if(LocalClientID != -1 && m_pClient->m_Snap.m_aCharacters[LocalClientID].m_Active && IsPlayerInfoAvailable(LocalClientID))
 	{
+
+		// FAKE PING THERE
+		if(m_pClient->m_Snap.m_pLocalInfo) {
+			g_Config.m_ClWhatsMyPing = m_pClient->m_Snap.m_apPlayerInfos[LocalClientID]->m_Latency;
+		}
+
 		const CGameClient::CClientData *pLocalClientData = &m_pClient->m_aClients[LocalClientID];
 		RenderHookCollLine(&pLocalClientData->m_RenderPrev, &pLocalClientData->m_RenderCur, LocalClientID);
 		RenderPlayer(&pLocalClientData->m_RenderPrev, &pLocalClientData->m_RenderCur, &m_aRenderInfo[LocalClientID], LocalClientID);

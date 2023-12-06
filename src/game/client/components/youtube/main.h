@@ -26,10 +26,10 @@ public:
     void PetStateUpdate();
 
     void RenderTrail(float rSize, int color, vec2 pos);
-    void Trail(vec2 pos, float timePassed, ColorRGBA color);
-
+    void Trail(vec2 pos, float timePassed, ColorRGBA c);
     void MagicParticles(float radius);
     void MagicParticles2(float radius);
+
 
     virtual int Sizeof() const override { return sizeof(*this); }
     virtual void OnRender() override;

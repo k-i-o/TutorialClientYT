@@ -159,6 +159,9 @@ protected:
 	bool m_MenuActive;
 	bool m_JoinTutorial;
 
+	// FAKE PING THERE
+	float currentRealPing = 0.0f;
+	
 	char m_aNextServer[256];
 
 	// images
