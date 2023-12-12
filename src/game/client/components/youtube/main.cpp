@@ -117,10 +117,11 @@ void CYoutube::OnRender(){
     if(g_Config.m_ClYoutubePet){
         Pet();
 
-        if(g_Config.m_ClYoutubePetPositionLine)
+        if(g_Config.m_ClYoutubePetPositionLine) {
             RenderPetPositionLine();
-
-        if(g_Config.m_ClYoutubePetTrail && petMoving)
+        }
+        
+        if(g_Config.m_ClYoutubePetTrail && petMoving) {
             RenderTrail(g_Config.m_ClYoutubePetTrailRadius, g_Config.m_ClYoutubePetTrailColor, PetPos);
         }
 
