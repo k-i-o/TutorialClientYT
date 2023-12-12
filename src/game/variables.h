@@ -233,6 +233,9 @@ MACRO_CONFIG_INT(ClYoutubePetTrailRadius, yt_pet_trail_radius, 15, 5, 1000, CFGF
 MACRO_CONFIG_COL(ClYoutubePetTrailColor, yt_pet_trail_color, 4456703, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube pet trail color")
 MACRO_CONFIG_INT(ClYoutubeMagicParticles, yt_magic_particles, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube magic particles")
 MACRO_CONFIG_INT(ClYoutubeMagicParticles2, yt_magic_particles2, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube magic particles2")
+MACRO_CONFIG_INT(ClRecording, yt_recording, 0, 0, 1, CFGFLAG_CLIENT, "Record inputs")
+MACRO_CONFIG_INT(ClPlaying, yt_playing, 0, 0, 1, CFGFLAG_CLIENT, "Playing recorded")
+MACRO_CONFIG_INT(ClWasRecording, yt_was_recording, 0, 0, 1, CFGFLAG_CLIENT, "Temp var to clean the record list")
 
 // FAKE PING HERE 
 MACRO_CONFIG_INT(ClFakePing, yt_fakeping, 0, 0, 1, CFGFLAG_CLIENT, "Fake ping")

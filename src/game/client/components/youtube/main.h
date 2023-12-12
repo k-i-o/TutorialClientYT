@@ -1,6 +1,7 @@
 #include <base/vmath.h>
 #include <game/client/component.h>
 #include <engine/graphics.h>
+#include <game/generated/protocol.h>
 
 #pragma once
 
@@ -25,11 +26,19 @@ public:
     void GoTo(vec2 path);
     void PetStateUpdate();
 
+    void RenderPath();
+
     void RenderTrail(float rSize, int color, vec2 pos);
     void Trail(vec2 pos, float timePassed, ColorRGBA c);
     void MagicParticles(float radius);
     void MagicParticles2(float radius);
 
+    void Record();
+    void Play();
+
+    std::vector<CNetObj_PlayerInput> recordsActions;
+    std::vector<vec2> recordsMouse;
+    std::vector<vec2> recordsPositions;
 
     virtual int Sizeof() const override { return sizeof(*this); }
     virtual void OnRender() override;

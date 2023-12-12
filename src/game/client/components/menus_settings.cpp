@@ -3105,6 +3105,35 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 	{
 		g_Config.m_ClFreezePing ^= 1;
 	}
+
+	Container.HSplitTop(LineMargin, &Space, &Container);
+	if(DoButton_CheckBox_Number(&g_Config.m_ClRecording, !g_Config.m_ClRecording ? "Record" : "Stop recording", g_Config.m_ClRecording, &Space))
+	{
+		g_Config.m_ClRecording = (g_Config.m_ClRecording + 1)%2;
+	}
+	if(g_Config.m_ClRecording){
+		g_Config.m_ClPlaying = 0;
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		UI()->DoLabel(&Container, "Recording...", 20.0f, TEXTALIGN_ML);
+	} else{
+		if(g_Config.m_ClWasRecording != 0)
+			g_Config.m_ClWasRecording = 0;
+	}
+
+	if(!g_Config.m_ClRecording && m_pClient->m_YouTube.recordsActions.size() > 0 && m_pClient->m_YouTube.recordsMouse.size() > 0) {
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		if(DoButton_CheckBox_Number(&g_Config.m_ClPlaying, !g_Config.m_ClPlaying ? "Play" : "Stop playing", g_Config.m_ClPlaying, &Space))
+		{
+			g_Config.m_ClPlaying = (g_Config.m_ClPlaying + 1)%2;
+		}
+		if(g_Config.m_ClPlaying){
+			g_Config.m_ClRecording = 0;
+			Container.HSplitTop(LineMargin, &Space, &Container);
+			UI()->DoLabel(&Container, "Playing...", 20.0f, TEXTALIGN_ML);
+		}
+
+	}
+
 }
 
 void CMenus::RenderSettingsDDNet(CUIRect MainView)

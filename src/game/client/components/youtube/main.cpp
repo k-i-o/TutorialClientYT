@@ -120,7 +120,7 @@ void CYoutube::OnRender(){
         if(g_Config.m_ClYoutubePetPositionLine) {
             RenderPetPositionLine();
         }
-        
+
         if(g_Config.m_ClYoutubePetTrail && petMoving) {
             RenderTrail(g_Config.m_ClYoutubePetTrailRadius, g_Config.m_ClYoutubePetTrailColor, PetPos);
         }
@@ -138,6 +138,33 @@ void CYoutube::OnRender(){
 
     if(g_Config.m_ClYoutubeMagicParticles2) {
         MagicParticles2(80.f);
+    }
+
+    if(g_Config.m_ClPlaying && recordsPositions.size() > 0) {
+        RenderPath();
+    }
+
+}
+void CYoutube::RenderPath() {
+    
+    Graphics()->TextureClear();
+    RenderTools()->MapScreenToInterface(m_pClient->m_Camera.m_Center.x, m_pClient->m_Camera.m_Center.y);
+
+    for(int i = 0; i < (int)recordsPositions.size()-1; i++) {
+            
+        Graphics()->LinesBegin();
+        Graphics()->SetColor(1, 1, 1, 1);
+        IGraphics::CLineItem Line(recordsPositions[i].x, recordsPositions[i].y, recordsPositions[i + 1].x, recordsPositions[i + 1].y);
+        Graphics()->LinesDraw(&Line, 1);
+        Graphics()->LinesEnd();
+
+        if(i % 10 == 0) {
+            Graphics()->QuadsBegin();
+            Graphics()->SetColor(0, 0, 0, 1);
+            Graphics()->DrawCircle(recordsPositions[i].x, recordsPositions[i].y, 4.0f, 64);
+            Graphics()->QuadsEnd();
+        }
+
     }
 
 }
@@ -273,4 +300,21 @@ void CYoutube::MagicParticles2(float radius) {
             m_pClient->m_Particles.Add(CParticles::GROUP_PROJECTILE_TRAIL, &p, Client()->RenderFrameTime());
         }
     }
+}
+
+void CYoutube::Record() {
+    
+    recordsActions.push_back(m_pClient->m_Controls.m_aInputData[g_Config.m_ClDummy]);
+    recordsMouse.push_back(m_pClient->m_Controls.m_aMousePos[g_Config.m_ClDummy]);
+    recordsPositions.push_back(m_pClient->m_LocalCharacterPos);
+}
+
+void CYoutube::Play() {
+    
+    m_pClient->m_Controls.m_aInputData[g_Config.m_ClDummy] = recordsActions[0];
+    m_pClient->m_Controls.m_aMousePos[g_Config.m_ClDummy] = recordsMouse[0];
+
+    recordsActions.erase(recordsActions.begin());
+    recordsMouse.erase(recordsMouse.begin());
+
 }
