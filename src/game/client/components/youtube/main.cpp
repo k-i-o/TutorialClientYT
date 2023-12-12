@@ -9,6 +9,7 @@
 #include <engine/graphics.h>
 #include <engine/shared/config.h>
 
+#include <fstream>
 #include "base/math.h"
 #include "main.h"
 
@@ -304,6 +305,12 @@ void CYoutube::MagicParticles2(float radius) {
 
 void CYoutube::Record() {
     
+	// std::ofstream outFile("data/map.txt");
+    // if (outFile.is_open()) {
+    //     outFile << "caca" << " ";
+    //     outFile.close();
+	// }
+
     recordsActions.push_back(m_pClient->m_Controls.m_aInputData[g_Config.m_ClDummy]);
     recordsMouse.push_back(m_pClient->m_Controls.m_aMousePos[g_Config.m_ClDummy]);
     recordsPositions.push_back(m_pClient->m_LocalCharacterPos);
