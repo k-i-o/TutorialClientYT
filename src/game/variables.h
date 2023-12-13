@@ -222,7 +222,8 @@ MACRO_CONFIG_INT(ClVideoX264Preset, cl_video_preset, 5, 0, 9, CFGFLAG_CLIENT | C
 
 
 //Youtube
-MACRO_CONFIG_INT(ClYoutubePet, yt_pet, 0, 1, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Enable youtube pet")
+MACRO_CONFIG_INT(ClYoutubePet, yt_pet, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Enable youtube pet")
+MACRO_CONFIG_INT(ClYoutubePetTarget, yt_pet_target, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "0 = Player - 1 = Dummy")
 MACRO_CONFIG_INT(ClYoutubePetPositionLine, yt_pet_line, 0, 0, 1, CFGFLAG_CLIENT, "Youtube pet position line")
 MACRO_CONFIG_INT(ClRenderPetLikeTee, yt_pet_tee, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube pet like a tee")
 MACRO_CONFIG_INT(ClYoutubeTeeTrail, yt_tee_trail, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Youtube tee trail")

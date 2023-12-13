@@ -73,6 +73,8 @@ private:
 	float acceleration = 100;
 	PetState PetState = FOLLOW;
 
+    vec2 m_PetTarget;
+
 	float maxDistance = 250;
 	float minDistance = 70;
 

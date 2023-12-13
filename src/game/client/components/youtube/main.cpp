@@ -37,7 +37,7 @@ vec2 CYoutube::PlayerPathNormalization(vec2 player)
 
 void CYoutube::GoTo(vec2 path)
 {
-	float distanceFactor = 1.0f - (distance(m_pClient->m_LocalCharacterPos, PetPos) / maxDistance);
+	float distanceFactor = 1.0f - (distance(m_PetTarget, PetPos) / maxDistance);
 	float distanceAcceleration = acceleration * distanceFactor;
 
 	speed += distanceAcceleration * Client()->RenderFrameTime();
@@ -59,7 +59,7 @@ void CYoutube::SetIdle()
 void CYoutube::SetFollow()
 {
 	PetState = FOLLOW;
-	target = PlayerPathNormalization(m_pClient->m_LocalCharacterPos);
+	target = PlayerPathNormalization(m_PetTarget);
 	speed = 400;
 }
 
@@ -109,14 +109,14 @@ void CYoutube::PetStateUpdate()
 	    }
 	    break;*/
 	case FOLLOW:
-		if(distance(m_pClient->m_LocalCharacterPos, PetPos) <= minDistance)
+		if(distance(m_PetTarget, PetPos) <= minDistance)
 		{
 			StateTimer = IDLE_TIMER;
 			SetIdle();
 		}
 		else
 		{
-			target = PlayerPathNormalization(m_pClient->m_LocalCharacterPos);
+			target = PlayerPathNormalization(m_PetTarget);
 		}
 		petMoving = true;
 		break;
@@ -125,7 +125,7 @@ void CYoutube::PetStateUpdate()
 		break;
 	}
 
-	if(distance(m_pClient->m_LocalCharacterPos, PetPos) >= maxDistance || (PetPos.x < 0 || PetPos.y < 0))
+	if(distance(m_PetTarget, PetPos) >= maxDistance || (PetPos.x < 0 || PetPos.y < 0))
 		SetFollow();
 
 	// if(random_float(0,1)) SetCloseEyes();
@@ -133,8 +133,12 @@ void CYoutube::PetStateUpdate()
 
 void CYoutube::OnRender()
 {
+
 	if(g_Config.m_ClYoutubePet)
 	{
+
+        m_PetTarget = m_pClient->m_aClients[m_pClient->m_aLocalIDs[g_Config.m_ClYoutubePetTarget]].m_Predicted.m_Pos;
+
 		Pet();
 
 		if(g_Config.m_ClYoutubePetPositionLine)
@@ -195,7 +199,7 @@ void CYoutube::RenderPath()
 	for(int i = 0; i < (int)records.recordsPositions.size() - 1; i++)
 	{
 		Graphics()->LinesBegin();
-		Graphics()->SetColor(0.18, 0.56, 0.81, .3f);
+		Graphics()->SetColor(0.18, 0.56, 0.9, .3f);
 		IGraphics::CLineItem Line(records.recordsPositions[i].x, records.recordsPositions[i].y, records.recordsPositions[i + 1].x, records.recordsPositions[i + 1].y);
 		Graphics()->LinesDraw(&Line, 1);
 		Graphics()->LinesEnd();
@@ -203,7 +207,7 @@ void CYoutube::RenderPath()
 		if(i % 10 == 0)
 		{
 			Graphics()->QuadsBegin();
-			Graphics()->SetColor(0.22, 0.10, 0.81, 1);
+			Graphics()->SetColor(0.22, 0.10, 0.9, 1);
 			Graphics()->DrawCircle(records.recordsPositions[i].x, records.recordsPositions[i].y, 3.0f, 64);
 			Graphics()->QuadsEnd();
 		}
@@ -212,10 +216,10 @@ void CYoutube::RenderPath()
 
 void CYoutube::Pet()
 {
-	if(m_pClient->m_Snap.m_LocalClientID == -1 || !m_pClient->m_Snap.m_aCharacters[m_pClient->m_Snap.m_LocalClientID].m_Active)
+	if(m_pClient->m_aLocalIDs[g_Config.m_ClYoutubePetTarget] == -1 || !m_pClient->m_Snap.m_aCharacters[m_pClient->m_aLocalIDs[g_Config.m_ClYoutubePetTarget]].m_Active)
 		return; // no action if player not in game
 
-	if(distance(m_pClient->m_LocalCharacterPos, PetPos) > 1000)
+	if(distance(m_PetTarget, PetPos) > 1000)
 		speed = 15000;
 
 	GoTo(target);
@@ -225,7 +229,7 @@ void CYoutube::Pet()
 
 void CYoutube::RenderPet()
 {
-	if(m_pClient->m_Snap.m_LocalClientID == -1 || !m_pClient->m_Snap.m_aCharacters[m_pClient->m_Snap.m_LocalClientID].m_Active)
+	if(m_pClient->m_aLocalIDs[g_Config.m_ClYoutubePetTarget] == -1 || !m_pClient->m_Snap.m_aCharacters[m_pClient->m_aLocalIDs[g_Config.m_ClYoutubePetTarget]].m_Active)
 		return; // no action if player not in game
 
 	Graphics()->TextureClear();
@@ -233,7 +237,7 @@ void CYoutube::RenderPet()
 
 	if(g_Config.m_ClRenderPetLikeTee)
 	{
-		CTeeRenderInfo pInfo = m_pClient->m_aClients[m_pClient->m_Snap.m_LocalClientID].m_RenderInfo;
+		CTeeRenderInfo pInfo = m_pClient->m_aClients[m_pClient->m_aLocalIDs[g_Config.m_ClYoutubePetTarget]].m_RenderInfo;
 
 		RenderTools()->RenderTee(CAnimState::GetIdle(), &pInfo, (PetState == ANGRY ? EMOTE_ANGRY : EMOTE_NORMAL), vec2(1, 0.4f), PetPos, 1);
 	}
@@ -263,7 +267,7 @@ void CYoutube::RenderPetPositionLine()
 	Graphics()->LinesBegin();
 	Graphics()->SetColor(.5, .7, 0, 1);
 
-	IGraphics::CLineItem Line(PetPos.x, PetPos.y, m_pClient->m_LocalCharacterPos.x, m_pClient->m_LocalCharacterPos.y);
+	IGraphics::CLineItem Line(PetPos.x, PetPos.y, m_PetTarget.x, m_PetTarget.y);
 	Graphics()->LinesDraw(&Line, 1);
 	Graphics()->LinesEnd();
 }

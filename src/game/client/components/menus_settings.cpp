@@ -2995,8 +2995,15 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 		{
 			g_Config.m_ClYoutubePetPositionLine ^= 1;
 		}
-		GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubePetPositionLine, &Space, Localize("Show a line between the player and the pet"));
+		GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubePetPositionLine, &Space, "Show a line between the player and the pet");
 			
+
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		if(DoButton_CheckBox_Number(&g_Config.m_ClYoutubePetTarget, !g_Config.m_ClYoutubePetTarget ? "Target: Player" : "Target: Dummy", g_Config.m_ClYoutubePetTarget, &Space))
+		{
+			g_Config.m_ClYoutubePetTarget = (g_Config.m_ClYoutubePetTarget + 1)%2;
+		}
+
 		Container.HSplitTop(LineMargin, &Space, &Container);
 		if(DoButton_CheckBox(&g_Config.m_ClYoutubePetTrail, "Render Pet Trail", g_Config.m_ClYoutubePetTrail, &Space))
 		{
@@ -3009,8 +3016,8 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 			static CButtonContainer s_YoutubePetTrailResetID;
 			
 			Container.HSplitTop(LineMargin, &Space, &Container);
-			DoLine_ColorPicker(&s_YoutubePetTrailResetID, 25.0f, 13.0f, 5.0f, &Space, Localize("Trail color"), &g_Config.m_ClYoutubePetTrailColor, ColorRGBA(1,1,1,1), false);
-			GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubePetTrailColor, &Space, Localize("Trail color"));
+			DoLine_ColorPicker(&s_YoutubePetTrailResetID, 25.0f, 13.0f, 5.0f, &Space, "Trail color", &g_Config.m_ClYoutubePetTrailColor, ColorRGBA(1,1,1,1), false);
+			GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubePetTrailColor, &Space, "Trail color");
 			
 			Container.HSplitTop(LineMargin, &Space, &Container);
 			UI()->DoScrollbarOption(&g_Config.m_ClYoutubePetTrailRadius, &g_Config.m_ClYoutubePetTrailRadius, &Space, Localize("Trail radius"), 10, 1000);
@@ -3040,8 +3047,8 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 		static CButtonContainer s_YoutubeTeeTrailResetID;
 		
 		Container.HSplitTop(LineMargin, &Space, &Container);
-		DoLine_ColorPicker(&s_YoutubeTeeTrailResetID, 25.0f, 13.0f, 5.0f, &Space, Localize("Trail color"), &g_Config.m_ClYoutubeTeeTrailColor, ColorRGBA(1,1,1,1), false);
-		GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubeTeeTrailColor, &Space, Localize("Trail color"));
+		DoLine_ColorPicker(&s_YoutubeTeeTrailResetID, 25.0f, 13.0f, 5.0f, &Space, "Trail color", &g_Config.m_ClYoutubeTeeTrailColor, ColorRGBA(1,1,1,1), false);
+		GameClient()->m_Tooltips.DoToolTip(&g_Config.m_ClYoutubeTeeTrailColor, &Space, "Trail color");
 		
 		Container.HSplitTop(LineMargin, &Space, &Container);
 		UI()->DoScrollbarOption(&g_Config.m_ClYoutubeTeeTrailRadius, &g_Config.m_ClYoutubeTeeTrailRadius, &Space, Localize("Trail radius"), 10, 1000);
@@ -3120,41 +3127,12 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 			g_Config.m_ClWasRecording = 0;
 	}
 	
-	Container.HSplitTop(LineMargin, &Space, &Container);
-
-	const std::vector<const char*> records = m_pClient->m_YouTube.GetBinaryFilesInFolder(g_Config.m_ClMapRecordsPath);
-
-	static CUI::SDropDownState s_RecordsDropDownState;
-	static CScrollRegion s_RecordsDropDownScrollRegion;
-	s_RecordsDropDownState.m_SelectionPopupContext.m_pScrollRegion = &s_RecordsDropDownScrollRegion;
-	const int NewRecord = UI()->DoDropDown(&Space, g_Config.m_ClSelectedRecord, const_cast<const char**>(records.data()), static_cast<int>(records.size()), s_RecordsDropDownState);
-	if(g_Config.m_ClSelectedRecord != NewRecord)
-	{
-		g_Config.m_ClSelectedRecord = NewRecord;
-
-		dbg_msg("youtube", "Selected record: %s", records[g_Config.m_ClSelectedRecord]);
-	}
-
-	if(g_Config.m_ClSelectedRecord != -1 && !g_Config.m_ClRecording && g_Config.m_ClSelectedRecord < static_cast<int>(records.size())) {
-
-		static CButtonContainer s_YoutubeLoadRecordID,s_YoutubeDeleteRecordID;
-
-		Container.HSplitTop(LineMargin, &Space, &Container);
-		if(DoButton_Menu(&s_YoutubeLoadRecordID, "Load selected record", 0, &Space))
-		{
-			m_pClient->m_YouTube.LoadRecordsFromFile(records[g_Config.m_ClSelectedRecord]);
-		}
-
-		Container.HSplitTop(LineMargin, &Space, &Container);
-		if(DoButton_Menu(&s_YoutubeDeleteRecordID, "Delete selected record", 0, &Space))
-		{
-			m_pClient->m_YouTube.DeleteRecord(records[g_Config.m_ClSelectedRecord]);
-			g_Config.m_ClSelectedRecord = -1;
-		}
-	}
 
 	if(!g_Config.m_ClRecording && m_pClient->m_YouTube.records.recordsActions.size() > 0 && m_pClient->m_YouTube.records.recordsMouse.size() > 0) {
 		
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		UI()->DoLabel(&Container, "Recorded actions:", 15.0f, TEXTALIGN_ML);
+
 		static CButtonContainer saveRecordID;
 		Container.HSplitTop(LineMargin, &Space, &Container);
 		if(DoButton_Menu(&saveRecordID, "Save record (you must save before play it)", 0, &Space))
@@ -3174,6 +3152,47 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 		}
 
 	}
+
+	Container.HSplitTop(LineMargin, &Space, &Container);
+	UI()->DoLabel(&Container, "Saved records: ", 15.0f, TEXTALIGN_ML);
+
+	Container.HSplitTop(LineMargin, &Space, &Container);
+
+	const std::vector<const char*> records = m_pClient->m_YouTube.GetBinaryFilesInFolder(g_Config.m_ClMapRecordsPath);
+
+	static CUI::SDropDownState s_RecordsDropDownState;
+	static CScrollRegion s_RecordsDropDownScrollRegion;
+	s_RecordsDropDownState.m_SelectionPopupContext.m_pScrollRegion = &s_RecordsDropDownScrollRegion;
+	const int NewRecord = UI()->DoDropDown(&Space, g_Config.m_ClSelectedRecord, const_cast<const char**>(records.data()), static_cast<int>(records.size()), s_RecordsDropDownState);
+	if(g_Config.m_ClSelectedRecord != NewRecord)
+	{
+		g_Config.m_ClSelectedRecord = NewRecord;
+	}
+
+	if(g_Config.m_ClSelectedRecord != -1 && !g_Config.m_ClRecording && g_Config.m_ClSelectedRecord < static_cast<int>(records.size())) {
+
+		char aBufText[128];
+		str_format(aBufText, sizeof(aBufText), "Actions on selected '%s' record:", records[g_Config.m_ClSelectedRecord]);
+
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		UI()->DoLabel(&Container, aBufText, 20.0f, TEXTALIGN_ML);
+
+		static CButtonContainer s_YoutubeLoadRecordID,s_YoutubeDeleteRecordID;
+
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		if(DoButton_Menu(&s_YoutubeLoadRecordID, "Load selected record", 0, &Space))
+		{
+			m_pClient->m_YouTube.LoadRecordsFromFile(records[g_Config.m_ClSelectedRecord]);
+		}
+
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		if(DoButton_Menu(&s_YoutubeDeleteRecordID, "Delete selected record", 0, &Space))
+		{
+			m_pClient->m_YouTube.DeleteRecord(records[g_Config.m_ClSelectedRecord]);
+			g_Config.m_ClSelectedRecord = -1;
+		}
+	}
+
 
 }
 
