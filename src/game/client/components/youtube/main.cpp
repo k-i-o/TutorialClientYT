@@ -339,7 +339,6 @@ std::vector<const char*> CYoutube::GetBinaryFilesInFolder(const std::string& fol
 //     }
 // }
 
-// Funzione di serializzazione per il vettore
 template <typename T>
 void serializeVector(std::ostream& os, const std::vector<T>& vec) {
     size_t size = vec.size();
@@ -347,7 +346,6 @@ void serializeVector(std::ostream& os, const std::vector<T>& vec) {
     os.write(reinterpret_cast<const char*>(vec.data()), sizeof(T) * size);
 }
 
-// Funzione di deserializzazione per il vettore
 template <typename T>
 void deserializeVector(std::istream& is, std::vector<T>& vec) {
     size_t size;
@@ -361,7 +359,6 @@ void CYoutube::SaveRecordsToFile(const std::string& filename) {
     std::ofstream ofs(filename, std::ios::binary);
 
     if (ofs.is_open()) {
-        // Serializza i vettori separatamente
         serializeVector(ofs, records.recordsActions);
         serializeVector(ofs, records.recordsMouse);
         serializeVector(ofs, records.recordsPositions);
@@ -377,7 +374,6 @@ void CYoutube::LoadRecordsFromFile(const std::string& filename) {
     std::ifstream ifs(filename, std::ios::binary);
 
     if (ifs.is_open()) {
-        // Deserializza i vettori separatamente
         deserializeVector(ifs, records.recordsActions);
         deserializeVector(ifs, records.recordsMouse);
         deserializeVector(ifs, records.recordsPositions);
