@@ -121,6 +121,7 @@ void CGameClient::OnConsoleInit()
 					      &m_MapSounds,
 					      &m_BackGround, // render instead of m_MapLayersBackGround when g_Config.m_ClOverlayEntities == 100
 					      &m_MapLayersBackGround, // first to render
+					      &m_YouTube,
 					      &m_Particles.m_RenderTrail,
 					      &m_Items,
 					      &m_Players,
@@ -146,8 +147,7 @@ void CGameClient::OnConsoleInit()
 					      &m_Tooltips,
 					      &CMenus::m_Binder,
 					      &m_GameConsole,
-					      &m_MenuBackground,
-						  &m_YouTube});
+					      &m_MenuBackground});
 
 	// build the input stack
 	m_vpInput.insert(m_vpInput.end(), {&CMenus::m_Binder, // this will take over all input when we want to bind a key
