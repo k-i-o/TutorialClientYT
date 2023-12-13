@@ -43,6 +43,7 @@ public:
     void SaveRecords();
     void DeleteRecord(const std::string& filename);
     void RenderPath();
+    void RenderStart();
     void Record();
     void Play();
 
