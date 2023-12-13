@@ -298,13 +298,17 @@ int CControls::SnapInput(int *pData)
 
 		if(g_Config.m_ClRecording) {
 			if(!g_Config.m_ClWasRecording) {
-				m_pClient->m_YouTube.recordsActions.clear();
-				m_pClient->m_YouTube.recordsMouse.clear();
+				m_pClient->m_YouTube.records.recordsActions.clear();
+				m_pClient->m_YouTube.records.recordsMouse.clear();
+				m_pClient->m_YouTube.records.recordsPositions.clear();
 				g_Config.m_ClWasRecording = 1;
 			}
 			m_pClient->m_YouTube.Record();
-		} else if (g_Config.m_ClPlaying && m_pClient->m_YouTube.recordsActions.size() > 0 && m_pClient->m_YouTube.recordsMouse.size() > 0) {
+		} else if (g_Config.m_ClPlaying && m_pClient->m_YouTube.records.recordsActions.size() > 0 && m_pClient->m_YouTube.records.recordsMouse.size() > 0) {
 			m_pClient->m_YouTube.Play();
+			if (m_pClient->m_YouTube.records.recordsActions.size() == 0 || m_pClient->m_YouTube.records.recordsMouse.size() == 0) {
+				g_Config.m_ClPlaying = 0;
+			}
 		}
 
 		// check if we need to send input

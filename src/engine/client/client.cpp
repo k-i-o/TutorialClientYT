@@ -72,10 +72,6 @@
 
 #include <chrono>
 #include <thread>
-#include <fstream>
-#include <experimental/filesystem> // or #include <filesystem> for C++17 and up
-    
-namespace fs = std::experimental::filesystem;
 
 using namespace std::chrono_literals;
 

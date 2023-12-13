@@ -9,9 +9,14 @@
 #include <engine/graphics.h>
 #include <engine/shared/config.h>
 
+#include <cstring>
+#include <sys/stat.h>
 #include <fstream>
+#include <filesystem>
 #include "base/math.h"
 #include "main.h"
+
+namespace fs = std::filesystem;
 
 vec2 CYoutube::normalize(vec2 v){
     float length = sqrt(v.x * v.x + v.y * v.y);
@@ -141,7 +146,7 @@ void CYoutube::OnRender(){
         MagicParticles2(80.f);
     }
 
-    if(g_Config.m_ClPlaying && recordsPositions.size() > 0) {
+    if(g_Config.m_ClPlaying && records.recordsPositions.size() > 0) {
         RenderPath();
     }
 
@@ -151,18 +156,18 @@ void CYoutube::RenderPath() {
     Graphics()->TextureClear();
     RenderTools()->MapScreenToInterface(m_pClient->m_Camera.m_Center.x, m_pClient->m_Camera.m_Center.y);
 
-    for(int i = 0; i < (int)recordsPositions.size()-1; i++) {
+    for(int i = 0; i < (int)records.recordsPositions.size()-1; i++) {
             
         Graphics()->LinesBegin();
         Graphics()->SetColor(1, 1, 1, 1);
-        IGraphics::CLineItem Line(recordsPositions[i].x, recordsPositions[i].y, recordsPositions[i + 1].x, recordsPositions[i + 1].y);
+        IGraphics::CLineItem Line(records.recordsPositions[i].x, records.recordsPositions[i].y, records.recordsPositions[i + 1].x, records.recordsPositions[i + 1].y);
         Graphics()->LinesDraw(&Line, 1);
         Graphics()->LinesEnd();
 
         if(i % 10 == 0) {
             Graphics()->QuadsBegin();
             Graphics()->SetColor(0, 0, 0, 1);
-            Graphics()->DrawCircle(recordsPositions[i].x, recordsPositions[i].y, 4.0f, 64);
+            Graphics()->DrawCircle(records.recordsPositions[i].x, records.recordsPositions[i].y, 4.0f, 64);
             Graphics()->QuadsEnd();
         }
 
@@ -303,25 +308,144 @@ void CYoutube::MagicParticles2(float radius) {
     }
 }
 
-void CYoutube::Record() {
-    
-	// std::ofstream outFile("data/map.txt");
-    // if (outFile.is_open()) {
-    //     outFile << "caca" << " ";
-    //     outFile.close();
-	// }
+std::vector<const char*> CYoutube::GetBinaryFilesInFolder(const std::string& folderPath) {
+    std::vector<const char*> fileNames;
 
-    recordsActions.push_back(m_pClient->m_Controls.m_aInputData[g_Config.m_ClDummy]);
-    recordsMouse.push_back(m_pClient->m_Controls.m_aMousePos[g_Config.m_ClDummy]);
-    recordsPositions.push_back(m_pClient->m_LocalCharacterPos);
+    for (const auto& entry : fs::directory_iterator(folderPath)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".bin") {
+            std::string fileName = entry.path().string();
+            const char* cString = fileName.c_str();
+
+            fileNames.push_back(strdup(cString));
+        }
+    }
+
+    return fileNames;
+}
+
+// void CYoutube::SaveRecordsToFile(const std::string& filename) {
+
+//     std::ofstream ofs(filename, std::ios::binary);
+//     if (ofs.is_open()) {
+//         ofs.write(reinterpret_cast<const char*>(records.recordsActions.data()), records.recordsActions.size() * sizeof(CNetObj_PlayerInput));
+
+//         ofs.write(reinterpret_cast<const char*>(records.recordsMouse.data()), records.recordsMouse.size() * sizeof(vec2));
+
+//         ofs.write(reinterpret_cast<const char*>(records.recordsPositions.data()), records.recordsPositions.size() * sizeof(vec2));
+
+//         dbg_msg("YOUTUBE", "Data saved to: %s", filename.c_str());
+//     } else {
+//         dbg_msg("YOUTUBE", "Error opening the file: %s", filename.c_str());
+//     }
+// }
+
+// Funzione di serializzazione per il vettore
+template <typename T>
+void serializeVector(std::ostream& os, const std::vector<T>& vec) {
+    size_t size = vec.size();
+    os.write(reinterpret_cast<const char*>(&size), sizeof(size));
+    os.write(reinterpret_cast<const char*>(vec.data()), sizeof(T) * size);
+}
+
+// Funzione di deserializzazione per il vettore
+template <typename T>
+void deserializeVector(std::istream& is, std::vector<T>& vec) {
+    size_t size;
+    is.read(reinterpret_cast<char*>(&size), sizeof(size));
+
+    vec.resize(size);
+    is.read(reinterpret_cast<char*>(vec.data()), sizeof(T) * size);
+}
+
+void CYoutube::SaveRecordsToFile(const std::string& filename) {
+    std::ofstream ofs(filename, std::ios::binary);
+
+    if (ofs.is_open()) {
+        // Serializza i vettori separatamente
+        serializeVector(ofs, records.recordsActions);
+        serializeVector(ofs, records.recordsMouse);
+        serializeVector(ofs, records.recordsPositions);
+
+        ofs.close();
+        dbg_msg("YOUTUBE", "Data saved to: %s", filename.c_str());
+    } else {
+        dbg_msg("YOUTUBE", "Error opening the file: %s", filename.c_str());
+    }
+}
+
+void CYoutube::LoadRecordsFromFile(const std::string& filename) {
+    std::ifstream ifs(filename, std::ios::binary);
+
+    if (ifs.is_open()) {
+        // Deserializza i vettori separatamente
+        deserializeVector(ifs, records.recordsActions);
+        deserializeVector(ifs, records.recordsMouse);
+        deserializeVector(ifs, records.recordsPositions);
+
+        ifs.close();
+
+        dbg_msg("YOUTUBE", "Size of recordsActions: %zu", records.recordsActions.size());
+        dbg_msg("YOUTUBE", "Size of recordsMouse: %zu", records.recordsMouse.size());
+        dbg_msg("YOUTUBE", "Size of recordsPositions: %zu", records.recordsPositions.size());
+
+        for (size_t i = 0; i < records.recordsActions.size(); ++i) {
+            dbg_msg("YOUTUBE", "recordsActions[%zu]: %d", i, records.recordsActions[i].m_Direction);
+        }
+    } else {
+        dbg_msg("YOUTUBE", "Error opening the file: %s", filename.c_str());
+    }
+}
+
+// void CYoutube::LoadRecordsFromFile(const std::string& filename){
+
+//     std::ifstream ifs(filename, std::ios::binary);
+//     if (ifs.is_open()) {
+//         // Add this line to set the file pointer to the beginning
+//         ifs.seekg(0, std::ios::beg);
+
+//         ifs.read(reinterpret_cast<char*>(records.recordsActions.data()), records.recordsActions.size() * sizeof(CNetObj_PlayerInput));
+//         ifs.read(reinterpret_cast<char*>(records.recordsMouse.data()),  records.recordsMouse.size() * sizeof(vec2));
+//         ifs.read(reinterpret_cast<char*>(records.recordsPositions.data()),  records.recordsPositions.size() * sizeof(vec2));
+
+//         dbg_msg("YOUTUBE", "Data loaded from: %s", filename.c_str());
+        
+        // dbg_msg("YOUTUBE", "Size of recordsActions: %d",  records.recordsActions.size());
+        // dbg_msg("YOUTUBE", "Size of recordsMouse: %d",  records.recordsMouse.size());
+        // dbg_msg("YOUTUBE", "Size of recordsPositions: %d",  records.recordsPositions.size());
+//     } else {
+//         dbg_msg("YOUTUBE", "Error opening the file: %s", filename.c_str());
+//     }
+// }
+
+void CYoutube::SaveRecords() {
+
+    const std::string mapName = Client()->GetCurrentMap();
+    
+    SaveRecordsToFile(std::string(g_Config.m_ClMapRecordsPath) + "\\" + mapName + ".bin");
+
+}
+
+void CYoutube::DeleteRecord(const std::string& filename) {
+    if (std::remove(filename.c_str()) != 0) {
+        dbg_msg("YOUTUBE", "Error deleting the file: %s", filename.c_str());
+    } else {
+        dbg_msg("YOUTUBE", "File successfully deleted: %s", filename.c_str());
+    }
+}
+
+void CYoutube::Record() {
+
+    records.recordsActions.push_back(m_pClient->m_Controls.m_aInputData[g_Config.m_ClDummy]);
+    records.recordsMouse.push_back(m_pClient->m_Controls.m_aMousePos[g_Config.m_ClDummy]);
+    records.recordsPositions.push_back(m_pClient->m_LocalCharacterPos);
 }
 
 void CYoutube::Play() {
     
-    m_pClient->m_Controls.m_aInputData[g_Config.m_ClDummy] = recordsActions[0];
-    m_pClient->m_Controls.m_aMousePos[g_Config.m_ClDummy] = recordsMouse[0];
+    m_pClient->m_Controls.m_aInputData[g_Config.m_ClDummy] = records.recordsActions[0];
+    m_pClient->m_Controls.m_aMousePos[g_Config.m_ClDummy] = records.recordsMouse[0];
 
-    recordsActions.erase(recordsActions.begin());
-    recordsMouse.erase(recordsMouse.begin());
+    records.recordsActions.erase(records.recordsActions.begin());
+    records.recordsMouse.erase(records.recordsMouse.begin());
 
 }

@@ -236,6 +236,8 @@ MACRO_CONFIG_INT(ClYoutubeMagicParticles2, yt_magic_particles2, 0, 0, 1, CFGFLAG
 MACRO_CONFIG_INT(ClRecording, yt_recording, 0, 0, 1, CFGFLAG_CLIENT, "Record inputs")
 MACRO_CONFIG_INT(ClPlaying, yt_playing, 0, 0, 1, CFGFLAG_CLIENT, "Playing recorded")
 MACRO_CONFIG_INT(ClWasRecording, yt_was_recording, 0, 0, 1, CFGFLAG_CLIENT, "Temp var to clean the record list")
+MACRO_CONFIG_INT(ClSelectedRecord, yt_selected_record, -1, 0, 9999, CFGFLAG_CLIENT, "Selected record")
+MACRO_CONFIG_STR(ClMapRecordsPath, yt_map_records_path, 999, "data\\recorded_maps", CFGFLAG_CLIENT | CFGFLAG_SAVE, "")
 
 // FAKE PING HERE 
 MACRO_CONFIG_INT(ClFakePing, yt_fakeping, 0, 0, 1, CFGFLAG_CLIENT, "Fake ping")

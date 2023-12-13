@@ -3119,8 +3119,49 @@ void CMenus::RenderSettingsYT(CUIRect MainView)
 		if(g_Config.m_ClWasRecording != 0)
 			g_Config.m_ClWasRecording = 0;
 	}
+	
+	Container.HSplitTop(LineMargin, &Space, &Container);
 
-	if(!g_Config.m_ClRecording && m_pClient->m_YouTube.recordsActions.size() > 0 && m_pClient->m_YouTube.recordsMouse.size() > 0) {
+	const std::vector<const char*> records = m_pClient->m_YouTube.GetBinaryFilesInFolder(g_Config.m_ClMapRecordsPath);
+
+	static CUI::SDropDownState s_RecordsDropDownState;
+	static CScrollRegion s_RecordsDropDownScrollRegion;
+	s_RecordsDropDownState.m_SelectionPopupContext.m_pScrollRegion = &s_RecordsDropDownScrollRegion;
+	const int NewRecord = UI()->DoDropDown(&Space, g_Config.m_ClSelectedRecord, const_cast<const char**>(records.data()), static_cast<int>(records.size()), s_RecordsDropDownState);
+	if(g_Config.m_ClSelectedRecord != NewRecord)
+	{
+		g_Config.m_ClSelectedRecord = NewRecord;
+
+		dbg_msg("youtube", "Selected record: %s", records[g_Config.m_ClSelectedRecord]);
+	}
+
+	if(g_Config.m_ClSelectedRecord != -1 && !g_Config.m_ClRecording && g_Config.m_ClSelectedRecord < static_cast<int>(records.size())) {
+
+		static CButtonContainer s_YoutubeLoadRecordID,s_YoutubeDeleteRecordID;
+
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		if(DoButton_Menu(&s_YoutubeLoadRecordID, "Load selected record", 0, &Space))
+		{
+			m_pClient->m_YouTube.LoadRecordsFromFile(records[g_Config.m_ClSelectedRecord]);
+		}
+
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		if(DoButton_Menu(&s_YoutubeDeleteRecordID, "Delete selected record", 0, &Space))
+		{
+			m_pClient->m_YouTube.DeleteRecord(records[g_Config.m_ClSelectedRecord]);
+			g_Config.m_ClSelectedRecord = -1;
+		}
+	}
+
+	if(!g_Config.m_ClRecording && m_pClient->m_YouTube.records.recordsActions.size() > 0 && m_pClient->m_YouTube.records.recordsMouse.size() > 0) {
+		
+		static CButtonContainer saveRecordID;
+		Container.HSplitTop(LineMargin, &Space, &Container);
+		if(DoButton_Menu(&saveRecordID, "Save record (you must save before play it)", 0, &Space))
+		{
+			m_pClient->m_YouTube.SaveRecords();
+		}
+
 		Container.HSplitTop(LineMargin, &Space, &Container);
 		if(DoButton_CheckBox_Number(&g_Config.m_ClPlaying, !g_Config.m_ClPlaying ? "Play" : "Stop playing", g_Config.m_ClPlaying, &Space))
 		{

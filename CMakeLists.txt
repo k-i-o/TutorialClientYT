@@ -1580,6 +1580,7 @@ set(EXPECTED_DATA
   menuimages/local_server.png
   menuimages/play_game.png
   menuimages/settings.png
+  recorded_maps/README.txt
   particles.png
   pet.png
   shader/pipeline.frag

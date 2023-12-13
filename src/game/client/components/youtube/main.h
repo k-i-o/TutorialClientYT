@@ -9,6 +9,12 @@
 #define ANGRY_TIMER .3f;
 //#define CLOSE_EYES_TIMER .05f;
 
+typedef struct MovementRecord{
+    std::vector<CNetObj_PlayerInput> recordsActions;
+    std::vector<vec2> recordsMouse;
+    std::vector<vec2> recordsPositions;
+}MovementRecord;
+
 class CYoutube : public CComponent{
 public:
     vec2 normalize(vec2 v);
@@ -26,19 +32,21 @@ public:
     void GoTo(vec2 path);
     void PetStateUpdate();
 
-    void RenderPath();
-
     void RenderTrail(float rSize, int color, vec2 pos);
     void Trail(vec2 pos, float timePassed, ColorRGBA c);
     void MagicParticles(float radius);
     void MagicParticles2(float radius);
 
+    std::vector<const char*> GetBinaryFilesInFolder(const std::string& folderPath);
+    void SaveRecordsToFile(const std::string& filename);
+    void LoadRecordsFromFile(const std::string& filename);
+    void SaveRecords();
+    void DeleteRecord(const std::string& filename);
+    void RenderPath();
     void Record();
     void Play();
 
-    std::vector<CNetObj_PlayerInput> recordsActions;
-    std::vector<vec2> recordsMouse;
-    std::vector<vec2> recordsPositions;
+    MovementRecord records;
 
     virtual int Sizeof() const override { return sizeof(*this); }
     virtual void OnRender() override;
