@@ -143,7 +143,7 @@ void CYoutube::OnRender(){
     }
 
     if(g_Config.m_ClYoutubeMagicParticles2) {
-        MagicParticles2(80.f);
+        MagicParticles2(80.f, m_pClient->m_LocalCharacterPos);
     }
 
     if(records.recordsPositions.size() > 0) {
@@ -175,15 +175,15 @@ void CYoutube::RenderPath() {
     for(int i = 0; i < (int)records.recordsPositions.size()-1; i++) {
             
         Graphics()->LinesBegin();
-        Graphics()->SetColor(1, 1, 1, 1);
+        Graphics()->SetColor(0.18, 0.56, 0.81, .3f);
         IGraphics::CLineItem Line(records.recordsPositions[i].x, records.recordsPositions[i].y, records.recordsPositions[i + 1].x, records.recordsPositions[i + 1].y);
         Graphics()->LinesDraw(&Line, 1);
         Graphics()->LinesEnd();
 
         if(i % 10 == 0) {
             Graphics()->QuadsBegin();
-            Graphics()->SetColor(0, 0, 0, 1);
-            Graphics()->DrawCircle(records.recordsPositions[i].x, records.recordsPositions[i].y, 4.0f, 64);
+            Graphics()->SetColor(0.22, 0.10, 0.81, 1);
+            Graphics()->DrawCircle(records.recordsPositions[i].x, records.recordsPositions[i].y, 3.0f, 64);
             Graphics()->QuadsEnd();
         }
 
@@ -297,7 +297,7 @@ void CYoutube::MagicParticles(float radius) {
     }
 }
 
-void CYoutube::MagicParticles2(float radius) {
+void CYoutube::MagicParticles2(float radius, vec2 pos) {
     timer -= Client()->RenderFrameTime();
     if(timer <= 0) {
         timer = timerValue;
@@ -311,7 +311,7 @@ void CYoutube::MagicParticles2(float radius) {
             float dist = random_float(0, radius);
             vec2 offset = vec2(cos(angle) * dist, sin(angle) * dist);
 
-            p.m_Pos = m_pClient->m_LocalCharacterPos + offset;
+            p.m_Pos = pos + offset;
 
             p.m_LifeSpan = random_float(0.5f, 1.5f);
             p.m_StartSize = 8.0f;

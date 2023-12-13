@@ -35,7 +35,7 @@ public:
     void RenderTrail(float rSize, int color, vec2 pos);
     void Trail(vec2 pos, float timePassed, ColorRGBA c);
     void MagicParticles(float radius);
-    void MagicParticles2(float radius);
+    void MagicParticles2(float radius, vec2 pos);
 
     std::vector<const char*> GetBinaryFilesInFolder(const std::string& folderPath);
     void SaveRecordsToFile(const std::string& filename);
