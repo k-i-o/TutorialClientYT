@@ -1,3 +1,5 @@
+Join my discord server: https://discord.gg/sYnbKEjj8g
+
 YT tutorials content in the client:
 - Pet (movement flying, trail, custom texture)
 - Tee (trail, two different particles effects)
